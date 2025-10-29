@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Dragon!</title>
+    <style>
+    body {
+    	font-family: "Comic Sans", Comic Sans, sans-serif;
+  }
+      .Submit {
+  		background-color: rgb(51, 222, 29);
+    	color: Black;
+   	 	border: none;
+    	height: 24px;
+    	width: 60px;
+    	border-radius: 2px;
+    	cursor: pointer;
+    	margin-right: 8px;
+  	}
+    
+    .Sign-in {
+      background-color: rgb(0, 255, 234);
+    	color: Black;
+    	border: none;
+    	height: 24px;
+    	width: 70px;
+   	 	border-radius: 2px;
+    	cursor: pointer;
+    	margin-right: 8px;
+      transition: background-color 1.7s ease;
+   		
+    }
+      
+     .play {
+     	 background-color: rgb(97, 168, 42);
+     	 margin-bottom: 8px;
+       color: black;
+       border: none;
+     	 height: 60px;
+       width: 130px;
+       border-radius: 2px;
+       cursor: pointer;
+       font-size: 50px;
+       
+     }
+      
+      .settings {
+       background-color: rgb(89, 89, 89);
+     	 margin-bottom: 8px;
+       color: black;
+       border: none;
+     	 height: 60px;
+       width: 130px;
+       border-radius: 2px;
+       cursor: pointer;
+       font-size: 30px;
+      }
+         
+     .page {
+         display: none;
+        }
+      .page.active {
+          display: block; 
+         }
+      
+        .box {
+            width: 45px;              /* Box width   */
+            height: 45px;             /* Box height */
+            background-color: #1ebd1e
+              ; /* Box background color */
+            border: 2px solid #333;    /* Border thickness, style, and color */
+            padding: 20px;             /* Space inside the box */
+            border-radius: 10px;       /* Rounded corners */
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.3); /* Shadow effect */
+ 						position: fixed;
+  					top: 0px;
+      }
+      
+      .pause-overlay {
+   
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(8px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.pause-button {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  background-color: #ffcc00;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1001; /* higher than overlay */
+}
+      
+      .mainButton {
+      	background-color: rgb(42, 170, 235);
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      
+      .Resume {
+      	background-color: rgb(199, 26, 26);
+      	padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      
+      #movingBox {
+  width: 20px;
+  height: 20px;
+  background-color:#18b518 ;
+  position: absolute; /* Allows precise positioning with top/left */
+  top: 0px; /* Initial position */
+  left: 300px; /* Initial position */
+}
+      
+.username {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%); /* Center horizontally */
+  padding: 5px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  z-index: 10;
+}
+      
+.moving-object {
+  width: 60px;
+  height: 60px;
+  background-color: red;
+  position: absolute;
+  top: 0;
+  left: 100vw; /* Start off-screen right */
+}
+
+      .play_again {
+       background-color: rgb(97, 168, 42);
+     	 margin-bottom: 8px;
+       color: black;
+       border: none;
+     	 height: 80px;
+       width: 130px;
+       border-radius: 2px;
+       cursor: pointer;
+       font-size: 30px;
+      }
+    </style>
+  </head>
+  <body>
+  <div id="page1" class="page active">
+  	<h1>Make a Account</h1>
+  	<br>
+
+  	<label for="fname">Username:</label>
+  	<input type="text" id="fname" name="fname" size="50"><br>     <br>
+  	<label for="pin">Password:</label>
+  	<input type="text" id="pin" name="pin" maxlength="4" size="4"><br><br>
+  	<br>
+  	<button class="Submit" onclick="showPage('page2')">Submit</button>
+    <button class="Sign-in" onclick="showPage('page3')">Sign-in</button>
+   </div> 
+    
+     <div id="page2" class="page">
+       <h1>Flappy Dragon</h1>
+       <h1>Main Menu</h1>
+       <br>
+       
+       <button class="play" onclick="showPage('page5')">Play</button>
+       <br>
+       <button class="settings" onclick="showPage('page4')">Settings</button>
+       <br>
+       
+        </div>
+		<div id="page3" class="page">
+  		<h1>Sign-in to your account</h1>
+ 	 		<br>
+ 	 	<label for="fname">Username:</label>
+  	<input type="text" id="fname" name="fname" size="50"><br><br>
+  	<label for="pin">Password:</label>
+  	<input type="text" id="pin" name="pin" maxlength="4" size="4"><br><br>
+  	<button class="submit" onclick="showPage('page2')">Submit</button>
+	</div> 
+
+<div id="page4" class="page">
+  <h1>Settings</h1>
+</div>
+    
+    <div id="page5" class="page">
+      <!-- Pause Button (top-right corner) -->
+<button class="pause-button" onclick="pauseGame()">Pause</button>
+<div class="box" id="player">
+  <h2 id="username" class="username"></h2>
+</div>
+            <div id="pauseOverlay" class="pause-overlay">
+  <div class="pause-menu">
+    <h2>Paused</h2>
+    <button onclick="resumeGame()" class="resume">Resume</button>
+    <button onclick="showPage('page2')" class="mainButton">Main menu</button>
+  </div>
+</div>
+      <div class="moving-object"></div>
+           
+       </div>
+    
+    <div id="page6" class="page">
+      <h1>YOU DIED!</h1>
+      <button onclick="showPage('page5')" class="play_again">PLAY AGAIN</button>
+    </div>
+        
+<script>
+  let spawnTimerId = null;
+let gameGeneration = 0;
+  function start() {
+  // Stop any previous spawner timer
+  if (spawnTimerId) {
+    clearTimeout(spawnTimerId);
+    spawnTimerId = null;
+  }
+
+  // Bump generation so old animations bail out
+  gameGeneration++;
+
+  // hide pause UI
+  const overlay = document.getElementById('pauseOverlay');
+  if (overlay) overlay.style.display = 'none';
+
+  // reset flags
+  isPlayerLoopRunning = false;
+  isRedBoxLoopRunning = false;
+
+  // reset player position and physics
+  boxY = 200;
+  velocityY = 0;
+  box.style.top = `${boxY}px`;
+  updateGround();
+
+  // clear DOM and arrays
+  document.querySelectorAll('.moving-object').forEach(el => el.remove());
+  activeRedBoxes = [];
+  usedYPositions = [];
+
+  // clear pause and start loops
+  isPaused = false;
+  updateBoxPosition();
+  startRedBoxSpawner();
+}
+  let activeRedBoxes = [];
+ const box = document.getElementById('player');
+  let boxY = 200;               // initial top position in px
+  let velocityY = 0;            // current vertical velocity in px/frame
+  const gravity = 0.8;          // gravity put
+  const jumpStrength = -12;     // instantaneous velocity applied on tap (negative = up)
+  let groundLevel = window.innerHeight - box.offsetHeight - 10; // recomputed on resize
+let currentPageId = null;
+  
+function showPage(pageId) {
+  const allPages = document.querySelectorAll('.page');
+
+  // If page 5 is currently active and is about to be hidden, call freeze()
+  if (currentPageId === 'page5' && pageId !== 'page5') {
+    freeze();
+  }
+
+  // Remove 'active' class from all pages
+  allPages.forEach(page => page.classList.remove('active'));
+
+  // Add 'active' class to the target page
+  const targetPage = document.getElementById(pageId);
+  if (targetPage) {
+    targetPage.classList.add('active');
+
+    // If page 5 is being shown now, call start()
+    if (pageId === 'page5') {
+      start();
+    }
+  }
+  currentPageId = pageId;
+}
+
+function updateGround() {
+  groundLevel = window.innerHeight - box.offsetHeight - 10;
+  if (boxY > groundLevel) boxY = groundLevel;
+}
+window.addEventListener('resize', updateGround);
+
+  // Trigger jump: each press/tap sets velocity to jumpStrength (allows mid-air re-taps)
+  function triggerJump(e) {
+    // prevent page from scrolling on spacebar
+    if (e && e.type === 'keydown' && e.code === 'Space') e.preventDefault();
+    velocityY = jumpStrength;
+  }
+
+  // Keyboard, mouse and touch support     
+  document.addEventListener('keydown', (e) => { if (e.code === 'Space') triggerJump(e); });
+  document.addEventListener('mousedown', triggerJump);
+  document.addEventListener('touchstart', triggerJump, { passive: false });
+
+  let usedYPositions = [];
+  
+  let isPaused = false;
+
+function pauseGame() {
+  isPaused = true;
+  document.getElementById('pauseOverlay').style.display = 'flex';
+}
+
+function resumeGame() {
+  isPaused = false;
+  document.getElementById('pauseOverlay').style.display = 'none';
+
+  updateBoxPosition();
+
+  activeRedBoxes.forEach(boxData => {
+    animateRedBox(boxData); // Only restarts if not already running
+  });
+}
+// Modify updateBoxPosition to respect pause
+function updateBoxPosition() {
+  if (isPaused || isPlayerLoopRunning) return;
+  isPlayerLoopRunning = true;
+
+  function loop() {
+    if (isPaused) {
+      isPlayerLoopRunning = false;
+      return;
+    }
+
+    velocityY += gravity;
+    boxY += velocityY;
+
+    if (boxY > groundLevel) {
+      boxY = groundLevel;
+      velocityY = 0;
+    }
+
+    if (boxY < 0) {
+      boxY = 0;
+      velocityY = 0;
+    }
+
+    box.style.top = `${boxY}px`;
+    requestAnimationFrame(loop);
+  }
+
+  loop();
+}
+  function freeze() {
+    isPaused = true;
+  }
+  
+  
+
+  
+  function checkCollision(enemyBox) {
+  const playerRect = box.getBoundingClientRect();
+  const boxRect = enemyBox.getBoundingClientRect();
+
+  const collided =
+    playerRect.left < boxRect.right &&
+    playerRect.right > boxRect.left &&
+    playerRect.top < boxRect.bottom &&
+    playerRect.bottom > boxRect.top;
+
+  if (collided) { 
+    handleCollision();
+  }
+}
+ function handleCollision() {
+  // stop spawn timer
+  if (spawnTimerId) {
+    clearTimeout(spawnTimerId);
+    spawnTimerId = null;
+  }
+
+  // set paused so animations stop
+  isPaused = true;
+
+  // remove DOM boxes and clear array
+  document.querySelectorAll('.moving-object').forEach(el => el.remove());
+  activeRedBoxes = [];
+
+  // increment generation so any in-flight animation exits
+  gameGeneration++;
+
+  // now do your UI / page switch
+  showPage('page6');
+}
+function spawnRedBox(startY, offsetX = 0) {
+  const newBox = document.createElement('div');
+  newBox.classList.add('moving-object');
+
+  newBox.style.top = `${startY}px`;
+  newBox.style.left = `${window.innerWidth + offsetX}px`;
+
+  document.getElementById('page5').appendChild(newBox);
+
+  const boxData = { element: newBox, y: startY, running: false };
+  activeRedBoxes.push(boxData);
+
+  animateRedBox(boxData);
+}
+ // Replace animateRedBox to use a slower speed and respect pause reliably
+function animateRedBox(boxData) {
+  if (boxData.running) return;
+  boxData.running = true;
+
+  const thisGeneration = gameGeneration;
+  const newBox = boxData.element;
+  let x = parseFloat(newBox.style.left) || window.innerWidth;
+  const velocity = -6;
+
+  function move() {
+    // Stop if paused, or if a new game started, or the element was removed
+    if (isPaused || thisGeneration !== gameGeneration || !document.body.contains(newBox)) {
+      boxData.running = false;
+      return;
+    }
+
+    x += velocity;
+    if (x < -60) {
+      x = window.innerWidth;
+
+      let newY;
+      let tries = 0;
+      do {
+        newY = Math.random() * (window.innerHeight - 60);
+        tries++;
+      } while (
+        activeRedBoxes.some(box => Math.abs(box.y - newY) < 80) && tries < 80
+      );
+
+      newBox.style.top = `${newY}px`;
+      boxData.y = newY;
+    }
+
+    newBox.style.left = `${x}px`;
+
+    // Collision check
+    const playerRect = box.getBoundingClientRect();
+    const boxRect = newBox.getBoundingClientRect();
+
+    const collided =
+      playerRect.left < boxRect.right &&
+      playerRect.right > boxRect.left &&
+      playerRect.top < boxRect.bottom &&
+      playerRect.bottom > boxRect.top;
+
+    if (collided) {
+      handleCollision();
+      boxData.running = false;
+      return;
+    }
+
+    requestAnimationFrame(move);
+  }
+
+  move();
+}function animateRedBox(boxData) {
+  if (boxData.running) return;
+  boxData.running = true;
+
+  const thisGeneration = gameGeneration;
+  const newBox = boxData.element;
+  let x = parseFloat(newBox.style.left) || window.innerWidth;
+  const velocity = -6;
+
+  function move() {
+    // Stop if paused, or if a new game started, or the element was removed
+    if (isPaused || thisGeneration !== gameGeneration || !document.body.contains(newBox)) {
+      boxData.running = false;
+      return;
+    }
+
+    x += velocity;
+    if (x < -60) {
+      x = window.innerWidth;
+
+      let newY;
+      let tries = 0;
+      do {
+        newY = Math.random() * (window.innerHeight - 60);
+        tries++;
+      } while (
+        activeRedBoxes.some(box => Math.abs(box.y - newY) < 80) && tries < 80
+      );
+
+      newBox.style.top = `${newY}px`;
+      boxData.y = newY;
+    }
+
+    newBox.style.left = `${x}px`;
+
+    // Collision check
+    const playerRect = box.getBoundingClientRect();
+    const boxRect = newBox.getBoundingClientRect();
+
+    const collided =
+      playerRect.left < boxRect.right &&
+      playerRect.right > boxRect.left &&
+      playerRect.top < boxRect.bottom &&
+      playerRect.bottom > boxRect.top;
+
+    if (collided) {
+      handleCollision();
+      boxData.running = false;
+      return;
+    }
+
+    requestAnimationFrame(move);
+  }
+
+  move();
+}
+
+// Replace startRedBoxSpawner with this guaranteed-gap spawner
+function startRedBoxSpawner() {
+  const thisGeneration = gameGeneration;
+
+  function spawnLoop() {
+    // If a new generation started, stop this loop
+    if (thisGeneration !== gameGeneration) return;
+
+    if (isPaused) {
+      spawnTimerId = setTimeout(spawnLoop, 1000);
+      return;
+    }
+
+    // Compute lane size from player so lanes are meaningful
+    const playerHeight = box.offsetHeight || 50;
+    const laneMargin = 20;
+    const laneHeight = Math.max(playerHeight + laneMargin, 100);
+
+    const totalLanes = Math.max(3, Math.floor(window.innerHeight / laneHeight));
+    // Choose one lane to keep empty (guaranteed gap)
+    const safeLane = Math.floor(Math.random() * totalLanes);
+
+    // Build lanes excluding the safe lane
+    const lanes = Array.from({ length: totalLanes }, (_, i) => i).filter(l => l !== safeLane);
+
+    // Max boxes per cycle (keep low so it isn't overwhelming)
+    const maxBoxes = Math.min(3, lanes.length);
+
+    // Shuffle lanes (Fisher-Yates)
+    for (let i = lanes.length - 2; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 2));
+      [lanes[i], lanes[j]] = [lanes[j], lanes[i]];
+    }
+
+    const selectedLanes = lanes.slice(2, maxBoxes);
+
+    // Spawn one box per selected lane with horizontal staggering
+    selectedLanes.forEach((laneIndex, i) => {
+      const startY = Math.max(10, laneIndex * laneHeight + Math.floor((laneHeight - playerHeight) / 3) + (Math.random() * 30 - 15));
+      const offsetX = i * 140 + Math.floor(Math.random() * 40);
+      spawnRedBox(startY, offsetX);
+    });
+
+    // schedule next cycle and keep the id for cleanup
+    const nextDelay = Math.floor(Math.random() * 3000) + 3500; // 3.5s - 6.5s
+    spawnTimerId = setTimeout(spawnLoop, nextDelay);
+  }
+
+  // Start immediately
+  spawnLoop();
+}
+  
+	
+  
+  
+  </script>
+    
