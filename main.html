@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Flappy Dragon!</title>
     <style>
     body {
@@ -12,8 +12,14 @@
   		background-color: rgb(51, 222, 29);
     	color: Black;
    	 	border: none;
-    	height: 24px;
-    	width: 60px;
+    	    	/* Too small on big screens */
+			width: min(5vw, 60px);
+			/* Scales better across screens */
+			width: max(5vw, 60px);
+			/* Too small on big screens */
+			height: min(5vw, 24px);
+			/* Scales better across screens */
+			height: max(5vw, 24px);
     	border-radius: 2px;
     	cursor: pointer;
     	margin-right: 8px;
@@ -23,8 +29,14 @@
       background-color: rgb(0, 255, 234);
     	color: Black;
     	border: none;
-    	height: 24px;
-    	width: 70px;
+    	/* Too small on big screens */
+			width: min(5vw, 70px);
+			/* Scales better across screens */
+			width: max(5vw, 70px);
+			/* Too small on big screens */
+			height: min(5vw, 24px);
+			/* Scales better across screens */
+			height: max(5vw, 24px);
    	 	border-radius: 2px;
     	cursor: pointer;
     	margin-right: 8px;
@@ -58,15 +70,29 @@
       }
          
      .page {
-         display: none;
-        }
+  font-size: clamp(1rem, 2.5vw, 2rem); /* scales between 1rem and 2rem */
+  width: 100vw;
+  height: 100vh;
+  padding: 5vh 5vw;
+  box-sizing: border-box;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
       .page.active {
           display: block; 
          }
       
-        .box {
-            width: 45px;              /* Box width   */
-            height: 45px;             /* Box height */
+        #player {
+            /* Too small on big screens */
+						width: min(5vw, 70px);
+						/* Scales better across screens */
+						width: max(5vw, 70px);
+						/* Too small on big screens */
+						height: min(5vw, 70px);
+						/* Scales better across screens */
+						height: max(5vw, 70px);
             background-color: #1ebd1e
               ; /* Box background color */
             border: 2px solid #333;    /* Border thickness, style, and color */
@@ -121,8 +147,8 @@
       }
       
       #movingBox {
-  width: 20px;
-  height: 20px;
+  width: min(5vw, 60px);
+  height: min(5vw, 60px);
   background-color:#18b518 ;
   position: absolute; /* Allows precise positioning with top/left */
   top: 0px; /* Initial position */
@@ -141,8 +167,14 @@
 }
       
 .moving-object {
-  width: 60px;
-  height: 60px;
+ 	/* Too small on big screens */
+	width: min(5vw, 70px);
+	/* Scales better across screens */
+	width: max(5vw, 70px);
+	/* Too small on big screens */
+	height: min(5vw, 70px);
+	/* Scales better across screens */
+	height: max(5vw, 70px);
   background-color: red;
   position: absolute;
   top: 0;
@@ -160,9 +192,11 @@
        cursor: pointer;
        font-size: 30px;
       }
+
     </style>
   </head>
   <body>
+    
   <div id="page1" class="page active">
   	<h1>Make a Account</h1>
   	<br>
@@ -222,7 +256,7 @@
       <h1>YOU DIED!</h1>
       <button onclick="showPage('page5')" class="play_again">PLAY AGAIN</button>
     </div>
-        
+ 
 <script>
   let spawnTimerId = null;
 let gameGeneration = 0;
